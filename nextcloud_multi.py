@@ -5,7 +5,6 @@
 #   * user activity
 #   * db size
 #   * share count
-#   * available app updates
 #
 # Parameters understood:
 #     config   (required)
@@ -93,19 +92,6 @@ class NextcloudMultiGraph:
             'db_size.draw AREA',
             'db_size.min 0',
 
-            # available_updates
-            'multigraph nextcloud_available_updates',
-            'graph_title Nextcloud available App updates',
-            'graph_args --base 1000 -l 0',
-            'graph_printf %.0lf',
-            'graph_vlabel updates available',
-            'graph_info graph showing the number of available app updates',
-            'graph_category nextcloud',
-            'num_updates_available.label available app updates',
-            'num_updates_available.info number of available app updates',
-            'num_updates_available.min 0',
-            'num_updates_available.warning 1',
-
             # storages
             'multigraph nextcloud_storages',
             'graph_title Nextcloud Storages',
@@ -167,15 +153,6 @@ class NextcloudMultiGraph:
         dbsize = api_response['ocs']['data']['server']['database']['size']
         self.result.append('multigraph nextcloud_dbsize')
         self.result.append('db_size.value %s' % dbsize)
-
-        # app updates
-        # precaution for Nextcloud versions prior to version 14
-        version = api_response['ocs']['data']['nextcloud']['system']['version'].split(sep=".")
-
-        if int(version[0]) >= 14:
-            num_updates_available = api_response['ocs']['data']['nextcloud']['system']['apps']['num_updates_available']
-            self.result.append('multigraph nextcloud_available_updates')
-            self.result.append('num_updates_available.value %s' % num_updates_available)
 
         # storage
         storage = api_response['ocs']['data']['nextcloud']['storage']
